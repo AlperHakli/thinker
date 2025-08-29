@@ -1,4 +1,4 @@
-from app.model.tools import math_tools, global_tools, utility_tools, database_analysis_tools
+from app.model.tools import math_tools, global_tools, utility_tools, database_analysis_tools , database_visualization_tools
 
 #TODO add more tools like data analysis tools , data visualization tools , maybe model builder tools at the future
 
@@ -24,4 +24,14 @@ database_analysis_agent_toollist = [
     global_tools.final_answer,
     database_analysis_tools.get_correlation,
     database_analysis_tools.get_median_mean_std_var_min_max_mode,
+]
+
+database_visualization_agent_toollist = [
+    global_tools.load_db,
+    global_tools.final_answer,
+    database_visualization_tools.bar_plot_tool,
+    database_visualization_tools.pie_plot_tool,
+    database_visualization_tools.line_plot_tool,
+
+
 ]

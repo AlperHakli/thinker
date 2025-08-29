@@ -10,7 +10,8 @@ class Settings:
         "MATH_AGENT",
         "CHAT_AGENT",
         "UTILITY_AGENT",
-        "DATABASE_ANALYSIS_AGENT"
+        "DATABASE_ANALYSIS_AGENT",
+        "DATABASE_VISUALIZATION_AGENT"
     ]
     DATABASE_URL = os.getenv("DATABASE_URL")
     IP_API_URL = os.getenv("IP_API_URL")
@@ -19,4 +20,7 @@ class Settings:
     DESCRIBE_DROP_ATTRIBUTES_LIST = ['25%', '50%', '75%']
 
 
+
+
 settings = Settings()
+

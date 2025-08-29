@@ -12,6 +12,7 @@ prompt_templates = [
     base_prompts.chat_agent_prompt,
     base_prompts.utility_agent_prompt,
     base_prompts.database_analysis_agent_prompt,
+    base_prompts.database_visualization_agent_prompt,
 ]
 
 prompt_converted = prompt_to_str_converter(prompt_templates)
