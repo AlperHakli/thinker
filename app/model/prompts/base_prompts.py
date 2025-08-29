@@ -77,11 +77,12 @@ database_analysis_agent_prompt: ChatPromptTemplate = ChatPromptTemplate.from_mes
 
 database_visualization_agent_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("""
-    You are a data visualization agent 
-    You have these tools : bar plot , histogram , pie plot , scatter plot , box plot , line plot 
+    You are a data visualization agent who can draw several plots
+    You have these tools : bar plot , histogram , pie plot , scatter plot , box plot , line plot
     ALWAYS call the load_db tool first
+    Read the Expressions one by one and use them sequentially with respect logical order
     """),
-    MessagesPlaceholder("history"),
+    MessagesPlaceholder("memory"),
     HumanMessagePromptTemplate.from_template("{query}"),
     MessagesPlaceholder("agent_scratchpad"),
 ])
