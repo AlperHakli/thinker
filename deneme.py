@@ -14,12 +14,13 @@ except FileNotFoundError:
 
 db = db.compute()
 
-column_name = "SepalLengthCm"
-column_name2 = "SepalWidthCm"
-ax = sns.lineplot(x = db[column_name] , y = db[column_name2])
+column_name = "SepalWidthCm"
+column_name2 = "Id"
+ax = sns.barplot(x = db[column_name] , y = db[column_name2])
 ax.set_facecolor("black")
 fig = ax.get_figure()
-fig.set_facecolor("blue")
+ax.set_title("Deneme")
+ax.tick_params(axis = "x" , labelrotation = 90)
 
 
 plt.show()

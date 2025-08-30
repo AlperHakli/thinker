@@ -32,6 +32,7 @@ database_visualization_agent_toollist = [
     database_visualization_tools.bar_plot_tool,
     database_visualization_tools.pie_plot_tool,
     database_visualization_tools.line_plot_tool,
+    database_visualization_tools.scatter_plot_tool,
 
 
 ]

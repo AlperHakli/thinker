@@ -79,6 +79,7 @@ database_visualization_agent_prompt: ChatPromptTemplate = ChatPromptTemplate.fro
     SystemMessagePromptTemplate.from_template("""
     You are a data visualization agent who can draw several plots
     You have these tools : bar plot , histogram , pie plot , scatter plot , box plot , line plot
+    <about language> ALWAYS SPEAK same language with user
     ALWAYS call the load_db tool first
     Read the Expressions one by one and use them sequentially with respect logical order
     """),

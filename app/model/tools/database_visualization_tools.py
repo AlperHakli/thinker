@@ -6,8 +6,105 @@ from app.model.db_cache import DB_CACHE
 from typing import Union
 import pandas as pd
 
-
 #TODO you must complete this visualization tools today
+
+variable_adjuster_base_prompt: str = """
+    <x_column_name and y_column_name> real column names that will use when plotting the linechart
+    <file_key> : key value of the database.
+    <outside_plot_color>: The background color of the figure area outside the plot axes.
+    <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
+    <x_axis_label_color and y_axis_label_color> Color of title of x-axis and y-axis
+    <x_axis_label_value and y_axis_label_value>: Title value of x-axis and y-axis Don't use these values unless user wants to give a title the plot
+    <x_ticks_color and y_ticks_color>: Color of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <x_ticks_rotation and y_ticks_rotation: Rotation value of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
+    <plot_title , plot_title_color> plot title that will show in the top center of the plot and it's color
+"""
+
+
+def _multiple_variable_adjuster(
+        ax: plt.Axes,
+        x_column_name: str = None,
+        y_column_name: str = None,
+        outside_plot_color: str = None,
+        inside_plot_color: str = None,
+        x_axis_label_color: str = None,
+        y_axis_label_color: str = None,
+        x_axis_label_value: str = None,
+        y_axis_label_value: str = None,
+        x_ticks_color: str = None,
+        y_ticks_color: str = None,
+        x_ticks_rotation: float = None,
+        y_ticks_rotation: float = None,
+        window_title: str = None,
+        plot_title: str = None,
+        plot_title_color: str = None,
+
+) \
+        -> plt.Axes:
+    """
+    Multiple variable adjuster for base matplotlib.Axes class \n
+    Visualization tools will use this function
+    """
+
+    default_x_axis_label_color = "black"
+    default_y_axis_label_color = "black"
+    default_plot_title_color = "black"
+    default_line_color = "darkblue"
+
+    fig = ax.get_figure()
+
+    if outside_plot_color is not None:
+        fig.set_facecolor(outside_plot_color)
+
+    if inside_plot_color is not None:
+        ax.set_facecolor(inside_plot_color)
+
+    if x_ticks_color is not None:
+        ax.tick_params(axis="x", color=x_ticks_color, labelcolor=x_ticks_color)
+
+    if y_ticks_color is not None:
+        ax.tick_params(axis="y", color=y_ticks_color, labelcolor=y_ticks_color)
+
+    if x_ticks_rotation is not None:
+        ax.tick_params(axis="x", labelrotation=x_ticks_rotation)
+
+    if y_ticks_rotation is not None:
+        ax.tick_params(axis="y", labelrotation=y_ticks_rotation)
+
+    if x_axis_label_color is not None:
+        default_x_axis_label_color = x_axis_label_color
+
+    if y_axis_label_color is not None:
+        default_y_axis_label_color = y_axis_label_color
+
+    if x_axis_label_value is not None:
+        ax.set_xlabel(xlabel=x_axis_label_value, color=default_x_axis_label_color)
+    elif x_column_name is not None:
+        ax.set_xlabel(xlabel=x_column_name, color=default_x_axis_label_color)
+        # probably model used id column
+    else:
+        ax.set_xlabel(xlabel="Index", color=default_x_axis_label_color)
+
+    if y_axis_label_value is not None:
+        ax.set_ylabel(ylabel=y_axis_label_value, color=default_y_axis_label_color)
+    elif y_column_name is not None:
+        ax.set_ylabel(ylabel=y_column_name, color=default_y_axis_label_color)
+    else:
+        ax.set_ylabel(ylabel="Index", color=default_y_axis_label_color)
+
+    if plot_title_color is not None:
+        default_plot_title_color = plot_title_color
+
+    if plot_title is not None:
+        ax.set_title(label=plot_title, color=default_plot_title_color, loc="center")
+
+    if window_title is not None:
+        fig.canvas.manager.set_window_title(title=window_title)
+
+    return ax
+
+
 @tool
 async def bar_plot_tool(
         file_key: str,
@@ -15,16 +112,20 @@ async def bar_plot_tool(
         y_column_name: str = None,
         outside_plot_color: str = None,
         inside_plot_color: str = None,
-        bar_color: str = None,
-        x_values_color: str = None,
-        y_values_color: str = None,
-        xaxis_label_color: str = None,
-        yaxis_label_color: str = None,
-        window_title: str = None,
+        x_axis_label_color: str = None,
+        y_axis_label_color: str = None,
+        x_axis_label_value: str = None,
+        y_axis_label_value: str = None,
+        x_ticks_color: str = None,
+        y_ticks_color: str = None,
         x_ticks_rotation: int = None,
         y_ticks_rotation: int = None,
+        window_title: str = None,
+        plot_title: str = None,
+        plot_title_color: str = None,
+        bar_color: str = None,
         grid_color: str = None,
-        grid_line_style: str = None
+        grid_line_style: str = None,
 
 ) \
         -> Union[str, None]:
@@ -32,20 +133,22 @@ async def bar_plot_tool(
     you HAVE TO use these param names do not give random names except this tool's params
     If user doesn't specify any columns then DO NOT fill x_column_name and y_column_name
     Bar Plot Drawer you can use this tool to draw a bar plot
-    <Params>
+    
+    <x_column_name and y_column_name> real column names that will use when plotting the linechart
     <file_key> : key value of the database.
-    <outside_plot_color> : The background: color of the figure area outside the plot axes.
-    <inside_plot_color> : The background: color of the plotting area where data and grid lines are drawn.
-    <x_ticks_color> and y_ticks_color means: color of the columns's values that will be seen in the plot.
-    <x_ticks_rotation> and y_ticks_rotation>: Rotation value of columns must be number otherwise do not add it.
-    <xaxis_label_color and yaxis_label_color> means color of the name of axis.
-    <grid_line_style> style of grid lines Possible options are '-' (default) or 'solid', '--' or 'dashed', '-.' or 'dashdot' and ':' or 'dotted'
-    </Params>
+    <outside_plot_color>: The background color of the figure area outside the plot axes.
+    <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
+    <x_axis_label_color and y_axis_label_color> Color of title of x-axis and y-axis
+    <x_axis_label_value and y_axis_label_value>: Title value of x-axis and y-axis Don't use these values unless user wants to give a title the plot
+    <x_ticks_color and y_ticks_color>: Color of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <x_ticks_rotation and y_ticks_rotation: Rotation value of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
+    <plot_title , plot_title_color> plot title that will show in the top center of the plot and it's color
+    
     """
     try:
         grid_decoration = {}
-        db_uncomputed = DB_CACHE[file_key]
-        db = db_uncomputed.compute()
+        db = DB_CACHE[file_key].compute()
         if x_column_name is None and y_column_name is None:
             return "mention in a friendly, slightly funny way that both x-axis and y-axis column names cannot be None user must specify at least one of them"
 
@@ -56,40 +159,28 @@ async def bar_plot_tool(
 
         sns.set_style("whitegrid", rc=grid_decoration)
 
-
         ax = sns.barplot(
             x=db[x_column_name] if x_column_name else range(len(db[y_column_name])),
             y=db[y_column_name] if y_column_name else range(len(db[x_column_name])),
             color=bar_color
         )
-        fig = ax.get_figure()
-
-        if x_values_color is not None:
-            plt.tick_params(axis="x", color=x_values_color, labelcolor=x_values_color)
-
-        if y_values_color is not None:
-            plt.tick_params(axis="y", color=y_values_color, labelcolor=y_values_color)
-
-        if x_ticks_rotation is not None:
-            plt.xticks(rotation=x_ticks_rotation)
-
-        if y_ticks_rotation is not None:
-            plt.yticks(rotation=y_ticks_rotation)
-
-        if window_title is not None:
-            fig.canvas.manager.set_window_title(window_title)
-
-        if outside_plot_color is not None:
-            fig.set_facecolor(outside_plot_color)
-
-        if inside_plot_color is not None:
-            ax.set_facecolor(inside_plot_color)
-
-        if xaxis_label_color is not None:
-            ax.set_xlabel(ax.get_xlabel(), color=xaxis_label_color)
-
-        if yaxis_label_color is not None:
-            ax.set_ylabel(ax.get_ylabel(), color=yaxis_label_color)
+        ax = _multiple_variable_adjuster(
+            ax=ax,
+            x_column_name=x_column_name,
+            y_column_name=y_column_name,
+            outside_plot_color=outside_plot_color,
+            inside_plot_color=inside_plot_color,
+            x_axis_label_color=x_axis_label_color,
+            y_axis_label_color=y_axis_label_color,
+            x_axis_label_value=x_axis_label_value,
+            y_axis_label_value=y_axis_label_value,
+            x_ticks_color=x_ticks_color,
+            y_ticks_color=y_ticks_color,
+            x_ticks_rotation=x_ticks_rotation,
+            y_ticks_rotation=y_ticks_rotation,
+            window_title=window_title,
+            plot_title=plot_title,
+            plot_title_color=plot_title_color)
 
         plt.show()
         return f"call the final_answer , you can mention about you have successfully drawn the plot and you can praise yourself"
@@ -128,8 +219,9 @@ async def pie_plot_tool(
 
 
     """
-    db_uncomputed = DB_CACHE[file_key]
-    db = db_uncomputed.compute()
+
+    db = DB_CACHE[file_key].compute()
+
     is_numeric = pd.api.types.is_numeric_dtype(db[column_name])
     default_how_many_numbers_after_dot = 2
     default_plot_title = column_name
@@ -189,107 +281,164 @@ async def line_plot_tool(
         y_column_name: str = None,
         outside_plot_color: str = None,
         inside_plot_color: str = None,
-        line_color: str = None,
-        x_ticks_color: str = None,
-        y_ticks_color: str = None,
-        x_axis_label_color:str = None,
+        x_axis_label_color: str = None,
         y_axis_label_color: str = None,
         x_axis_label_value: str = None,
         y_axis_label_value: str = None,
-        window_title : str = None,
+        x_ticks_color: str = None,
+        y_ticks_color: str = None,
+        x_ticks_rotation: float = None,
+        y_ticks_rotation: float = None,
+        window_title: str = None,
         plot_title: str = None,
-        plot_title_color:str = None,
-
+        plot_title_color: str = None,
+        line_color: str = None,
 
 ) \
         -> Union[str, None]:
     """
     Use this tool to draw a line plot
-
-
-    :param file_key:
+    
+    <x_column_name and y_column_name> real column names that will use when plotting the linechart
+    <file_key> : key value of the database.
     <outside_plot_color>: The background color of the figure area outside the plot axes.
     <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
-    <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
-    <x_ticks_color and y_ticks_color>: Color of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
-    <x_axis_label_value and y_axis_label_value>: Title value of x-axis and y-axis
     <x_axis_label_color and y_axis_label_color> Color of title of x-axis and y-axis
-    <line_color> color of the line plot's line
+    <x_axis_label_value and y_axis_label_value>: Title value of x-axis and y-axis Don't use these values unless user wants to give a title the plot
+    <x_ticks_color and y_ticks_color>: Color of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <x_ticks_rotation and y_ticks_rotation: Rotation value of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
     <plot_title , plot_title_color> plot title that will show in the top center of the plot and it's color
+    
+    <line_color> color of the line plot's line
+
     """
     try:
-        default_x_axis_label_value = None
-        default_y_axis_label_value = None
 
         if x_column_name is None and y_column_name is None:
-            return "mention in a friendly, slightly funny way that both x-axis and y-axis column names cannot be None user must specify at least one of them"
-        elif x_column_name is None:
-            default_x_axis_label_value = "Id"
-        else:
-            default_y_axis_label_value = "Id"
+            return "call the final_answer tool and mention in a friendly, slightly funny way that both x-axis and y-axis column names cannot be None user must specify at least one of them with his language"
 
-        db_uncomputed = DB_CACHE[file_key]
-        db = db_uncomputed.compute()
+        db = DB_CACHE[file_key].compute()
 
-        default_x_axis_label_color = "black"
-        default_y_axis_label_color = "black"
-        default_plot_title_color = "black"
+        default_line_color = "darkblue"
+
+        if line_color is not None:
+            default_line_color = line_color
 
         ax = sns.lineplot(
             x=db[x_column_name] if x_column_name else range(len(db[y_column_name])),
             y=db[y_column_name] if y_column_name else range(len(db[x_column_name])),
-            color=line_color
+            color=default_line_color
         )
-        fig = ax.get_figure()
 
-
-        if outside_plot_color is not None:
-            fig.set_facecolor(outside_plot_color)
-
-        if inside_plot_color is not None:
-            ax.set_facecolor(inside_plot_color)
-
-        if x_ticks_color is not None:
-            ax.tick_params(axis = "x", color = x_ticks_color, labelcolor = x_ticks_color)
-
-        if y_ticks_color is not None:
-            ax.tick_params(axis = "x", color = y_ticks_color, labelcolor = y_ticks_color)
-
-        if plot_title_color is not None:
-            default_plot_title_color = plot_title_color
-
-        if plot_title is not None:
-            ax.set_title(label=plot_title , color = default_plot_title_color , loc="center")
-
-        if x_axis_label_color is not None:
-            default_x_axis_label_color = x_axis_label_color
-        if y_axis_label_color is not None:
-            default_y_axis_label_color = y_axis_label_color
-            #TODO solve that default label value problem
-        if default_x_axis_label_value is not None:
-            ax.set_xlabel(xlabel=default_x_axis_label_value, color=default_x_axis_label_color)
-        else:
-            ax.set_xlabel(xlabel=x_axis_label_value, color=default_x_axis_label_color)
-
-        if default_y_axis_label_value is not None:
-            ax.set_ylabel(ylabel=default_y_axis_label_value, color=default_y_axis_label_color)
-        else:
-            ax.set_ylabel(ylabel=y_axis_label_value, color=default_y_axis_label_color)
-
-
-        # if x_axis_label_value is not None:
-        #     ax.set_xlabel(xlabel=x_axis_label_value,color = default_x_axis_label_color)
-
-        # if y_axis_label_value is not None:
-        #     ax.set_ylabel(ylabel=y_axis_label_value , color = default_y_axis_label_color)
-
-        if window_title is not None:
-            fig.canvas.manager.set_window_title(title=window_title)
-
+        ax = _multiple_variable_adjuster(
+            ax=ax,
+            x_column_name=x_column_name,
+            y_column_name=y_column_name,
+            outside_plot_color=outside_plot_color,
+            inside_plot_color=inside_plot_color,
+            x_axis_label_color=x_axis_label_color,
+            y_axis_label_color=y_axis_label_color,
+            x_axis_label_value=x_axis_label_value,
+            y_axis_label_value=y_axis_label_value,
+            x_ticks_color=x_ticks_color,
+            y_ticks_color=y_ticks_color,
+            x_ticks_rotation=x_ticks_rotation,
+            y_ticks_rotation=y_ticks_rotation,
+            window_title=window_title,
+            plot_title=plot_title,
+            plot_title_color=plot_title_color)
 
         plt.show()
-        return f"call the final_answer , you can mention about you have successfully drawn the plot and you can praise yourself"
+        return f"call the final_answer , you can mention about you have successfully drawn the plot and you can praise yourself with his language"
 
     except Exception as e:
-        return f"call the final_answer tool and mention about this error {e} to user"
+        return f"call the final_answer tool and mention about this error {e} to user with his language"
+
+
+@tool
+async def scatter_plot_tool(
+        file_key: str = None,
+        x_column_name: str = None,
+        y_column_name: str = None,
+        outside_plot_color: str = None,
+        inside_plot_color: str = None,
+        x_axis_label_color: str = None,
+        y_axis_label_color: str = None,
+        x_axis_label_value: str = None,
+        y_axis_label_value: str = None,
+        x_ticks_color: str = None,
+        y_ticks_color: str = None,
+        x_ticks_rotation: float = None,
+        y_ticks_rotation: float = None,
+        window_title: str = None,
+        plot_title: str = None,
+        plot_title_color: str = None,
+        scatter_dot_color: str = None,
+
+) \
+        -> Union[str, None]:
+    """
+    Use this tool to draw a scatter plot
+    You can draw Scatter chart with using this tool
+
+    <x_column_name and y_column_name> real column names that will use when plotting the linechart
+    <file_key> : key value of the database.
+    <outside_plot_color>: The background color of the figure area outside the plot axes.
+    <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
+    <x_axis_label_color and y_axis_label_color> Color of title of x-axis and y-axis
+    <x_axis_label_value and y_axis_label_value>: Title value of x-axis and y-axis Don't use these values unless user wants to give a title the plot
+    <x_ticks_color and y_ticks_color>: Color of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <x_ticks_rotation and y_ticks_rotation: Rotation value of the axis tick labels. Ticks are the numeric or percentage values shown along the x- and y-axes.
+    <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
+    <plot_title , plot_title_color> plot title that will show in the top center of the plot and it's color
+
+    <scatter_dot_color> color of the scatter dots
+
+    """
+    try:
+        db = DB_CACHE[file_key].compute()
+
+        default_scatter_color = "darkblue"
+
+        if scatter_dot_color is not None:
+            default_scatter_color = scatter_dot_color
+
+        ax = sns.scatterplot(
+            x=db[x_column_name] if x_column_name else range(len(db[y_column_name])),
+            y=db[y_column_name] if y_column_name else range(len(db[x_column_name])),
+            color=default_scatter_color,
+            hue= None,
+            palette= None,
+        )
+
+        ax = _multiple_variable_adjuster(
+            ax=ax,
+            x_column_name=x_column_name,
+            y_column_name=y_column_name,
+            outside_plot_color=outside_plot_color,
+            inside_plot_color=inside_plot_color,
+            x_axis_label_color=x_axis_label_color,
+            y_axis_label_color=y_axis_label_color,
+            x_axis_label_value=x_axis_label_value,
+            y_axis_label_value=y_axis_label_value,
+            x_ticks_color=x_ticks_color,
+            y_ticks_color=y_ticks_color,
+            x_ticks_rotation=x_ticks_rotation,
+            y_ticks_rotation=y_ticks_rotation,
+            window_title=window_title,
+            plot_title=plot_title,
+            plot_title_color=plot_title_color)
+
+        plt.show()
+        return f"call the final_answer , you can mention about you have successfully drawn the plot and you can praise yourself with his language"
+
+    except Exception as e:
+        return f"call the final_answer tool and mention about this error {e} to user with his language"
+
+
+
+
+
+
 
