@@ -78,6 +78,6 @@ def buffer_window_memory_maker(
 
 math_agent_with_memory = summary_buffer_memory_maker(raw_chains.math_agent)
 chat_agent_with_memory = summary_buffer_memory_maker(raw_chains.chat_agent)
-utility_agent_with_memory = summary_buffer_memory_maker(raw_chains.utility_agent)
+utility_agent_with_memory = summary_buffer_memory_maker(raw_chains.utility_model)
 data_analysis_agent_with_memory = summary_buffer_memory_maker(raw_chains.database_analysis_agent)
 data_visualization_agent_with_memory = summary_buffer_memory_maker(raw_chains.database_visualization_agent)

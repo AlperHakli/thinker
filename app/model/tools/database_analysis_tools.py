@@ -96,18 +96,28 @@ async def get_median_mean_std_var_min_max_mode(
 
 
 @tool
-async def get_correlation(file_key: str, column_names: list[str] = None) \
+async def get_correlation(
+        file_key: str,
+        column_names: list[str] = None,
+        for_visualization: bool = False
+
+) \
         -> Union[pd.DataFrame, str]:
     """
     Use it to return correlation matrix of provided database
-    param database : database to use
-    param column_names name of columns that user provided
+    <database> database to use
+    <column_names> name of columns that user provided
+    <for_visualization> if user want to visualize this correlation's result then set it True
     """
     try:
         database = DB_CACHE[file_key]
         database = database.select_dtypes(include=["number"])
         if column_names is None:
+            if for_visualization:
+                return database.corr()
             return database.corr().compute()
+        if for_visualization:
+            return database[column_names].corr()
         return database[column_names].corr().compute()
     except Exception as e:
         return f"call the final_answer tool and mention about this error {e} to user"

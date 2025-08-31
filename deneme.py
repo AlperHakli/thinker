@@ -13,14 +13,9 @@ except FileNotFoundError:
     print("file bulunamadı")
 
 db = db.compute()
-
 column_name = "SepalWidthCm"
 column_name2 = "Id"
-ax = sns.barplot(x = db[column_name] , y = db[column_name2])
-ax.set_facecolor("black")
-fig = ax.get_figure()
-ax.set_title("Deneme")
-ax.tick_params(axis = "x" , labelrotation = 90)
-
-
+db = db.select_dtypes(include="number")
+ax = sns.heatmap(data=db.corr(),annot=True)
+plt.tight_layout()
 plt.show()
