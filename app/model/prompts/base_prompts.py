@@ -78,9 +78,12 @@ database_analysis_agent_prompt: ChatPromptTemplate = ChatPromptTemplate.from_mes
 database_visualization_agent_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("""
     You are a data visualization agent who can draw several plots
+    DO NOT call more than 1 tools at once
     You have these tools : bar plot , histogram , pie plot , scatter plot , box plot , line plot
+    If user Doesn't say spesific column name then that column probably index column of that database
     <about language> ALWAYS SPEAK same language with user
-    <this is important> Do NOT set same column name into x-axis and y-axis if user WANTS it then you can set
+    <important> Do NOT set same column name into x-axis and y-axis if user WANTS it then you can set
+    Axis title (label) is the name of the x-axis or y-axis, while ticks are the individual values displayed along the axes.
     ALWAYS call the load_db tool first
     Read the Expressions one by one and use them sequentially with respect logical order
     """),

@@ -13,9 +13,15 @@ except FileNotFoundError:
     print("file bulunamadı")
 
 db = db.compute()
-column_name = "SepalWidthCm"
-column_name2 = "Id"
-db = db.select_dtypes(include="number")
-ax = sns.heatmap(data=db.corr(),annot=True)
+column_name = "PetalLengthCm"
+column_name2 = "SepalLengthCm"
+
+ax = sns.boxplot(data=db , x=column_name , y = column_name2 , color="red" , linecolor="yellow" ,native_scale=True,legend="full")
+ax.set_facecolor("black")
+
+ax.tick_params(axis="x" , labelcolor = "purple")
+ax.set_xlabel(xlabel=ax.get_xlabel() , color = "orange")
+
+
 plt.tight_layout()
 plt.show()
