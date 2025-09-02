@@ -2,7 +2,7 @@ from app.model.tools.database_visualization_tools.visualization_imports import *
 from app.model.tools.database_visualization_tools.helper_functions import multiple_variable_adjuster
 import pandas as pd
 @tool
-async def box_plot_tool(
+async def violin_plot_tool(
         file_key: str = None,
         x_column_name: str = None,
         y_column_name: str = None,
@@ -20,15 +20,14 @@ async def box_plot_tool(
         x_tick_rotation: float = 0,
         y_tick_rotation: float = 0,
         plot_title_color: str = "black",
-        box_color: str = "white",
-        median_line_color: str = "black",
-        median_line_width: float = 1,
-) \
-        -> str:
+        violin_color: str = "white",
+        violin_line_color: str = "black",
+        violin_line_width: float = 1,
+)\
+    -> str :
     """
-    Use this tool to draw a box plot
-    Do not pass empty string values just pass if you need that variable
-
+    Use this tool to draw violin plot
+    You van draw Violin plot with this tool,
 
     <x_column_name> : only x-axis column name x-axis column name only
     <y_column_name> :  only y-axis column name y-axis column name only
@@ -46,9 +45,11 @@ async def box_plot_tool(
     <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
     <plot_title , plot_title_color> plot title that will show in the top center of the plot and it's color
     <hue_column_name>: specifies a categorical column to split the boxes into different colors, so each category is shown separately—for example, grouping by gender to show male and female boxes in different colors.
-    <box_color> : color box  all colors box color box
-    <median_line_color and median_line_width> Control the color and thickness of the internal line in each box, representing the median value of the distribution.
+    <violin_color> inside violin color
+    <violin_line_color> violin border line color
+    <violin_line_width> violin border line width
     """
+
 
     db = DB_CACHE[file_key]
 
@@ -74,13 +75,13 @@ async def box_plot_tool(
 
     native_scale = is_numeric_1 or is_numeric_2
 
-    ax = sns.boxplot(
+    ax = sns.violinplot(
         x=db[x_column_name] if x_column_name is not None else range(len(db[y_column_name])),
         y=db[y_column_name] if y_column_name is not None else range(len(db[x_column_name])),
         native_scale=native_scale,
-        color=box_color,
-        linecolor=median_line_color,
-        linewidth=median_line_width,
+        color=violin_color,
+        linecolor=violin_line_color,
+        linewidth=violin_line_width,
         hue=db[hue_column_name] if hue_column_name is not None else None)
 
     ax = multiple_variable_adjuster(
@@ -102,7 +103,3 @@ async def box_plot_tool(
     plt.tight_layout()
     plt.show()
     return f"call the final_answer , you can mention about you have successfully drawn the plot and you can praise yourself with his language"
-    # try:
-    #
-    # except Exception as e:
-    #     return f"call the final_answer tool and mention about this error {e} to user with his language"

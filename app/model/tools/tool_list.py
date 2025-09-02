@@ -1,5 +1,13 @@
 from app.model.tools import math_tools, global_tools, utility_tools, database_analysis_tools
-from app.model.tools.database_visualization_tools import bar_plot_tool ,box_plot_tool ,heatmap_plot_tool , line_plot_tool , pie_plot_tool , scatter_plot_tool
+from app.model.tools.database_visualization_tools import \
+    (bar_plot_tool,
+     box_plot_tool,
+     heatmap_plot_tool,
+     line_plot_tool,
+     pie_plot_tool,
+     scatter_plot_tool,
+     violin_plot_tool
+     )
 
 #TODO add more tools like data analysis tools , data visualization tools , maybe model builder tools at the future
 
@@ -36,9 +44,6 @@ database_visualization_agent_toollist = [
     line_plot_tool.line_plot_tool,
     pie_plot_tool.pie_plot_tool,
     scatter_plot_tool.scatter_plot_tool,
-
-
-
-
+    violin_plot_tool.violin_plot_tool
 
 ]

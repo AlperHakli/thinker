@@ -1,12 +1,12 @@
 from app.model.tools.database_visualization_tools.visualization_imports import *
-from app.model.tools.database_visualization_tools.helper_functions import _multiple_variable_adjuster
+from app.model.tools.database_visualization_tools.helper_functions import multiple_variable_adjuster
 @tool
 async def scatter_plot_tool(
         file_key: str = None,
         x_column_name: str = None,
         y_column_name: str = None,
-        x_label_value: str = None,
-        y_label_value: str = None,
+        x_label_text: str = None,
+        y_label_text: str = None,
         window_title: str = None,
         plot_title: str = None,
         outside_plot_color: str = "white",
@@ -30,10 +30,14 @@ async def scatter_plot_tool(
     <file_key> : key value of the database.
     <outside_plot_color>: The background color of the figure area outside the plot axes.
     <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
-    <x_label_color and y_label_color> : Sets the color of the x-axis and y-axis titles (axis labels). These control only the axis titles, not the tick values.
-    <x_label_text and y_label_text> : The text for the x-axis and y-axis titles (axis labels). Only use these if you want to display a custom name for each axis.
-    <x_tick_color and y_tick_color> : Sets the color of the tick labels along the x-axis and y-axis. Ticks are the numeric or categorical values shown along the axes. This does not affect the axis title.
-    <x_tick_rotation and y_tick_rotation> : Sets the rotation angle (in degrees) of the tick labels on the x-axis and y-axis. Use this to tilt tick labels for better readability or to avoid overlap.
+    <x_label_color> : x-axis color title color x-axis label
+    <y_label_color> : y-axis color title color y-axis label
+    <x_label_text> : title x-axis label
+    <y_label_text> title y-axis label
+    <x_tick_color> : x-axis color tick number color categorical value x-axis
+    <y_tick_color> : y-axis color tick number color categorical value y-axis
+    <x_tick_rotation> : x-axis tick rotation number rotation categorical value x-axis
+    <y_tick_rotation> : y-axis tick rotation number rotation categorical value y-axis
     <window_title>: sets the name displayed in the top-left corner of the plot window when it opens.
     <plot_title , plot_title_color> plot title that will show in the top center of the plot and it's color
 
@@ -54,14 +58,14 @@ async def scatter_plot_tool(
             palette=None,
         )
 
-        ax = _multiple_variable_adjuster(
+        ax = multiple_variable_adjuster(
             ax=ax,
             outside_plot_color=outside_plot_color,
             inside_plot_color=inside_plot_color,
             x_label_color=x_label_color,
             y_label_color=y_label_color,
-            x_label_text=x_label_value,
-            y_label_text=y_label_value,
+            x_label_text=x_label_text,
+            y_label_text=y_label_text,
             x_tick_color=x_tick_color,
             y_tick_color=y_tick_color,
             x_tick_rotation=x_tick_rotation,
