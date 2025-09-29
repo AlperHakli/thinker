@@ -1,1 +1,51 @@
-*.egg-info
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.log
+
+# ---- Environment / Config ----
+# The .env file is included so users can replace the placeholder values with their own API keys.
+#.env
+#.env.local
+#.env.*.local
+.venv/
+venv/
+ENV/
+env/
+*.ini
+*.cfg
+
+# ---- IDE / Editors ----
+.vscode/
+.idea/
+*.iml
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- Streamlit ----
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+*.ipynb
+
+# ---- Build / Dist ----
+build/
+dist/
+*.egg
+*.manifest
+*.spec
+
+# ---- Cache ----
+*.cache
+*.mypy_cache/
+*.pytest_cache/
+.pytest_cache/

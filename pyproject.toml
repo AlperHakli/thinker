@@ -1,33 +1,50 @@
 [project]
 name = "thinker"
-version = "0.1.0"
+version = "1.0.0"
 description = "Conversational AI project with multiple AI agents like pdf agents , word , docs and some agents for data analysis and visualization "
 readme = "README.md"
 requires-python = ">=3.12.7"
 dependencies = [
     "ipykernel>=6.29.5",
+
+    #langchain for creating agent and executing
     "langchain-core>=0.3.15",
     "langchain-openai>=0.2.5",
-    "langsmith>=0.1.139",
     "langchain-community>=0.3.5",
     "langchain>=0.3.7",
+
+    #for tracing our agent workflow
+    "langsmith>=0.1.139",
+
+    #to create multiple agent workflows
+    "langgraph",
     "docarray>=0.40.0",
+
+    #backend libraries
     "fastapi>=0.115.8",
     "uvicorn>=0.34.0",
-    "google-search-results>=2.4.2",
-    "matplotlib",
-    "reportlab",
     "sqlalchemy",
-    "pytz",
+
+    #backend security libraries
     "pyjwt",
     "passlib",
-    "pypdf2",
+
+    #timezone library
+    "pytz",
+
+    #data analysis libraries
     "pandas",
     "dask[complete]",
     "pyarrow",
+
+    #visualization libraries
     "graphviz",
     "matplotlib",
-    "seaborn"
+    "seaborn",
+    "plotly",
+
+    #frontend
+    "streamlit"
 
 
 ]
@@ -35,4 +52,4 @@ dependencies = [
 packages = ["app"]
 
 [project.optional-dependencies]
-dev = ["ipdb"]
+dev = ["ipdb" , "grandalf"]

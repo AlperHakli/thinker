@@ -2,8 +2,9 @@ from typing import Sequence
 from app.model.chains.raw_chains import summary_agent
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import BaseMessage, AIMessage
+import streamlit as st
 
-
+counter = 1
 class CustomConversationalSummaryBufferMemory(BaseChatMessageHistory):
     """
     Custom conversational summary buffer memory class\n
@@ -59,6 +60,16 @@ class CustomConversationalSummaryBufferMemory(BaseChatMessageHistory):
         :param messages: A list that contains last Human and AI conversation
         :return: None
         """
+        # Prevents adding user and AI messages to memory on every invoke, except when invoking last agent's final_answer.
+        for msg in messages:
+            if isinstance(msg , AIMessage) and msg.tool_calls and st.session_state["last_agent_seen"]:
+                tool_name = msg.tool_calls[0]["name"]
+                if tool_name != "final_answer":
+                    print("SKİPPED MEMORY UPDATE")
+                    return
+        global counter
+        print(f"ADD MESSAGES WORKED : {counter}")
+        counter +=1
         self.messages = self.messages[1:]
         # print(f"SELF MESSAGES : {self.messages}")
         # print(f"MESSAGES : {messages}")

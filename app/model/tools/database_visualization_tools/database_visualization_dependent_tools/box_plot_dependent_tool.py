@@ -1,14 +1,11 @@
 from app.model.tools.database_visualization_tools.visualization_imports import *
 from app.model.tools.database_visualization_tools.helper_functions import _multiple_variable_adjuster
-import pandas as pd
 import streamlit as st
 from app.config import settings
 @tool
-async def box_plot_tool(
-        cache_key: str = None,
-        x_column_name: str = None,
-        y_column_name: str = None,
-        hue_column_name: str = None,
+async def box_plot_dependent_tool(
+        cache_key: str,
+        variable_name: str = None,
         window_title: str = None,
         plot_title: str = None,
         x_label_text: str = None,
@@ -23,14 +20,13 @@ async def box_plot_tool(
         y_tick_rotation: float = 0,
         plot_title_color: str = "black",
         box_color: str = "white",
-        median_line_color: str = "black",
-        median_line_width: float = 1,
 ) \
         -> str:
     """
     Use this tool to draw a box plot
 
-    <x_column_name and y_column_name>: specify the DataFrame columns to be plotted on the x-axis and y-axis,respectively.
+    <variable_name>: variables that you will visualize only select single variable if the variable associated with this tool
+    <important> the variable name must be one of them: [mean,median,standard_deviation,variance,minimum,maximum,mode,unique_counts,correlation]
     <outside_plot_color>: The background color of the figure area outside the plot axes.
     <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
     <x_label_color> : x-axis color title color x-axis label
@@ -48,28 +44,23 @@ async def box_plot_tool(
     <median_line_color and median_line_width> Control the color and thickness of the internal line in each box, representing the median value of the distribution.
     """
     try:
-        db = DB_CACHE[cache_key]["dask_plan"]
 
         plt.figure(figsize=settings.VISUALIZATION_SIZE)
-        if x_column_name is None and y_column_name is None:
-            return "call final_answer tool and mention in a friendly, slightly funny way that both x-axis and y-axis column names cannot be None user must specify at least one of them"
-        is_numeric_1 = False
-        is_numeric_2 = False
-        if x_column_name is not None:
-            is_numeric_1 = pd.api.types.is_numeric_dtype(db[x_column_name])
-        if y_column_name is not None:
-            is_numeric_2 = pd.api.types.is_numeric_dtype(db[y_column_name])
 
-        native_scale = is_numeric_1 or is_numeric_2
-
-        ax = sns.boxplot(
-            x=db[x_column_name] if x_column_name is not None else range(len(db[y_column_name])),
-            y=db[y_column_name] if y_column_name is not None else range(len(db[x_column_name])),
-            native_scale=native_scale,
-            color=box_color,
-            linecolor=median_line_color,
-            linewidth=median_line_width,
-            hue=db[hue_column_name] if hue_column_name is not None else None)
+        if variable_name is not None:
+            if variable_name == "correlation":
+                return "YOU MUST Mention this: you cannot draw correlation matrices with box plot call the heatmap plot tool"
+            # print(f"VARİABLE NAMES: {variable_name}")
+            variables_that_will_visualize = DB_CACHE[cache_key]["analysis_result"][variable_name]
+            print(f"VARİABLES THAT WİLL VİSUALİZE: {variables_that_will_visualize}")
+            print(f"CURRENT VARİABLE NAME: {variable_name}")
+            ax = sns.boxplot(
+                x=variables_that_will_visualize.keys(),
+                y=variables_that_will_visualize.values(),
+                color=box_color
+            )
+        else:
+            return "Mention you dont understand what variable you will draw"
 
         ax = _multiple_variable_adjuster(
             ax=ax,
@@ -91,8 +82,6 @@ async def box_plot_tool(
         st.session_state.visualization_list.append(plt.gcf())
         # plt.show()
         return f"call the final_answer , you can mention about you have successfully drawn the plot"
-
-
 
     except Exception as e:
         return f"call the final_answer tool and mention about this error {e} to user with his language"

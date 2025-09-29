@@ -1,13 +1,16 @@
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from config import settings
+from app.config import settings
 from langchain_core.runnables import ConfigurableField
 from langchain_core.runnables import RunnableSerializable
+import os
+import streamlit as st
 
-model_name = "gpt-4.1-nano"
-
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+OPENAI_MODEL_NAME = os.environ["OPENAI_MODEL_NAME"]
 embedding_model_name = "text-embedding-3-small"
 
-embedding_model = OpenAIEmbeddings(model=embedding_model_name, api_key=settings.OPENAI_API_KEY)
+# maybe I will use this embedding model for rag
+embedding_model = OpenAIEmbeddings(model=embedding_model_name)
 
 
 def model_creator(
@@ -21,9 +24,9 @@ def model_creator(
     :return: Gpt 4.1-nano model RunnableSerializable
     """
     return ChatOpenAI(
-        model=model_name,
+        model=OPENAI_MODEL_NAME,
         streaming=True,
-        api_key=settings.OPENAI_API_KEY,
+        # api_key=OPENAI_API_KEY,
         temperature=temperature
         # Model will use this callback every time when it creates new token
     ).configurable_fields(callbacks=ConfigurableField(
@@ -38,6 +41,7 @@ chat_model = model_creator(temperature=0.7)
 utility_model = model_creator(temperature=0)
 
 summarymodel = ChatOpenAI(
-    model=model_name,
-    api_key=settings.OPENAI_API_KEY,
+    # gpt 4.1 nano would be enough for memory summarization
+    model="gpt-4.1-nano",
+    # api_key=OPENAI_API_KEY,
 )

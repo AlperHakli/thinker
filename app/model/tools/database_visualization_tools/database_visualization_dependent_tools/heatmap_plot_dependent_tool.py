@@ -1,15 +1,11 @@
-import matplotlib.pyplot as plt
-
 from app.model.tools.database_visualization_tools.visualization_imports import *
 from app.model.tools.database_visualization_tools.helper_functions import _multiple_variable_adjuster
-import pandas as pd
 import streamlit as st
 from app.config import settings
-
 @tool
-async def heatmap_plot_tool(
-        cache_key: str = None,
-        column_names: list[str] = None,
+async def heatmap_plot_dependent_tool(
+        cache_key: str,
+        variable_name: str = None,
         window_title: str = None,
         plot_title: str = None,
         x_label_text: str = None,
@@ -29,7 +25,8 @@ async def heatmap_plot_tool(
         -> str:
     """
     Use this to plot a heatmap plot
-    <column_names> string column list that will add to heatmap
+    <variable_name>: variables that you will visualize only select single variable if the variable associated with this tool
+    <important> the variable name must be one of them: [mean,median,standard_deviation,variance,minimum,maximum,mode,unique_counts,correlation]
     <background_color> background_color of the plot
     <x_label_color and y_label_color> : Sets the color of the x-axis and y-axis titles (axis labels). These control only the axis titles, not the tick values.
     <x_label_text and y_label_text> : The text for the x-axis and y-axis titles (axis labels). Only use these if you want to display a custom name for each axis.
@@ -48,20 +45,17 @@ async def heatmap_plot_tool(
             if grid_width < 0:
                 return "Call the final_answer and mention about that the grid_width cannot be smaller than zero"
 
-        db = DB_CACHE[cache_key]["dask_plan"]
-        if column_names is not None:
-            db = db[column_names]
-        if not pd.api.types.is_numeric_dtype(db):
-            db = db.select_dtypes("number")
-            extra_string = "also you have successfully deleted non numeric columns"
+        if variable_name is not None:
+            ax = sns.heatmap(
+                data=DB_CACHE[cache_key]["analysis_result"][variable_name],
+                linecolor=grid_color if grid_color is not None else "white",
+                linewidths=grid_width if grid_width is not None else 1,
+                annot=annot
+            )
+        else:
+            return "Mention you dont understand what variable you will draw"
 
-        db = db.compute()
-        ax = sns.heatmap(
-            data=db,
-            linecolor=grid_color if grid_color is not None else "white",
-            linewidths=grid_width if grid_width is not None else 1,
-            annot=annot
-        )
+
 
         ax = _multiple_variable_adjuster(
             ax=ax,
@@ -77,6 +71,7 @@ async def heatmap_plot_tool(
             window_title=window_title,
             plot_title=plot_title,
             plot_title_color=plot_title_color)
+
         plt.tight_layout()
         st.session_state.visualization_list.append(plt.gcf())
         # plt.show()

@@ -2,7 +2,7 @@ from typing import Sequence
 from app.model.chains.raw_chains import summary_agent
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import BaseMessage, AIMessage
-
+counter = 1
 
 class CustomConversationalBufferWindowMemory(BaseChatMessageHistory):
     """
@@ -50,6 +50,16 @@ class CustomConversationalBufferWindowMemory(BaseChatMessageHistory):
         :param messages: A list that contains last Human and AI conversation
         :return: None
         """
+        # Prevents adding user and AI messages to memory on every invoke, except when invoking final_answer.
+        for msg in messages:
+            if isinstance(msg , AIMessage) and msg.tool_calls:
+                tool_name = msg.tool_calls[0]["name"]
+                if tool_name != "final_answer":
+                    print("SKİPPED MEMORY UPDATE")
+                    return
+        global counter
+        print(f"ADD MESSAGES WORKED : {counter}")
+        counter +=1
         strcontents = self._basemessage_get_content(messages=messages)
         self.messages.extend(strcontents)
         old_messages = self.messages[(-self.k - 2):-self.k]

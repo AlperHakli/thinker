@@ -5,10 +5,9 @@ from app.model.tools.database_visualization_tools.helper_functions import _multi
 import streamlit as st
 from app.config import settings
 @tool
-async def line_plot_tool(
-        cache_key: str = None,
-        x_column_name: str = None,
-        y_column_name: str = None,
+async def line_plot_dependent_tool(
+        cache_key: str,
+        variable_name: str = None,
         x_label_text: str = None,
         y_label_text: str = None,
         window_title: str = None,
@@ -29,7 +28,8 @@ async def line_plot_tool(
     """
     Use this tool to draw a line plot
     you HAVE TO use these param names do not give random names except this tool's params
-    <x_column_name and y_column_name>: specify the DataFrame columns to be plotted on the x-axis and y-axis,respectively.
+    <variable_name>: variables that you will visualize only select single variable if the variable associated with this tool
+    <important> the variable name must be one of them: [mean,median,standard_deviation,variance,minimum,maximum,mode,unique_counts,correlation]
     <outside_plot_color>: The background color of the figure area outside the plot axes.
     <inside_plot_color>: The background color of the plotting area where data and grid lines are drawn.
     <x_label_color and y_label_color> : Sets the color of the x-axis and y-axis titles (axis labels). These control only the axis titles, not the tick values.
@@ -44,18 +44,19 @@ async def line_plot_tool(
     """
     try:
         plt.figure(figsize=settings.VISUALIZATION_SIZE)
-        if x_column_name is None and y_column_name is None:
-            return "call the final_answer tool and mention in a friendly, slightly funny way that both x-axis and y-axis column names cannot be None user must specify at least one of them with his language"
+        if variable_name is not None:
+            if variable_name == "correlation":
+                return "YOU MUST Mention this: you cannot draw correlation matrices with line plot call the heatmap plot tool"
+            # print(f"VARİABLE NAMES: {variable_name}")
+            variables_that_will_visualize = DB_CACHE[cache_key]["analysis_result"][variable_name]
 
-        db = DB_CACHE[cache_key]["dask_plan"].compute()
-
-        ax = sns.lineplot(
-            x=db[x_column_name] if x_column_name is not None else range(len(db[y_column_name])),
-            y=db[y_column_name] if y_column_name is not None else range(len(db[x_column_name])),
-            color=line_color
-        )
-
-
+            ax = sns.lineplot(
+                x=variables_that_will_visualize.keys(),
+                y=variables_that_will_visualize.values(),
+                color=line_color
+            )
+        else:
+            return "Mention you dont understand what variable you will draw"
 
         ax = _multiple_variable_adjuster(
             ax=ax,
@@ -72,12 +73,10 @@ async def line_plot_tool(
             window_title=window_title,
             plot_title=plot_title,
             plot_title_color=plot_title_color)
+
         plt.tight_layout()
         st.session_state.visualization_list.append(plt.gcf())
-
         # plt.show()
-
-
         return f"call the final_answer , you can mention about you have successfully drawn the plot"
     except Exception as e:
         return f"call the final_answer tool and mention about this error {e} to user"

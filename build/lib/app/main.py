@@ -1,15 +1,12 @@
 import asyncio
 
 
-from app.model.async_agent_executor import AsyncAgentExecutor
-from app.model.queue_callback_handler import QueueCallBackHandler
-from app.model.tools.agents_and_tools import agents_and_tools
-from app.model.chains.agent_router import agent_router, embedding_model, prompt_embeddings
+from app.model.runner.async_agent_executor import AsyncAgentExecutor
+from app.model.runner.queue_callback_handler import QueueCallBackHandler
+from app.model.tools.agents_and_tools import agents_and_tools_as_list
+from app.model.runner.agent_router import agent_router, embedding_model, prompt_embeddings
 from app.backend.services.token_generator import token_generator
-from config import settings
-from dask.distributed import LocalCluster
-
-
+from app.config import settings
 
 executor = AsyncAgentExecutor(5)
 config = {"configurable": {
@@ -18,28 +15,28 @@ config = {"configurable": {
     }}
 
 
-async def run():
-    while True:
-        queue = asyncio.Queue()
-        streamer = QueueCallBackHandler(queue=queue)
-        userinput = input("Type: ")
-        embedded_input = embedding_model.embed_query(userinput)
-        agent_and_tool = agent_router(
-            embedded_input=embedded_input,
-            agents_and_tools=agents_and_tools,
-            prompt_embeddings=prompt_embeddings,
-            agent_names=settings.AGENT_NAMES,
-            verbose=True
-
-        )
-        result = await executor.ainvoke(
-            agent_and_tools=agent_and_tool,
-            streamer=streamer,
-            input = userinput,
-            config=config,
-            verbose=False
-        )
-        print(f"RESULT İS : {result}")
+# async def run():
+#     while True:
+#         queue = asyncio.Queue()
+#         streamer = QueueCallBackHandler(queue=queue)
+#         userinput = input("Type: ")
+#         embedded_input = embedding_model.embed_query(userinput)
+#         agent_and_tool = agent_router(
+#             embedded_input=embedded_input,
+#             agents_and_tools_list=agents_and_tools_as_list,
+#             prompt_embeddings=prompt_embeddings,
+#             agent_names=settings.AGENT_NAMES,
+#             verbose=True
+#
+#         )
+#         duckduck = await executor.ainvoke(
+#             agent_and_tools=agent_and_tool,
+#             streamer=streamer,
+#             input = userinput,
+#             config=config,
+#             verbose=False
+#         )
+#         print(f"RESULT İS : {duckduck}")
 
 async def run2():
     queue = asyncio.Queue()
@@ -49,7 +46,7 @@ async def run2():
         embedded_input = embedding_model.embed_query(userinput)
         agent_and_tool = agent_router(
             embedded_input=embedded_input,
-            agents_and_tools=agents_and_tools,
+            agents_and_tools_list=agents_and_tools_as_list,
             prompt_embeddings=prompt_embeddings,
             agent_names=settings.AGENT_NAMES,
             verbose=True
@@ -68,11 +65,11 @@ async def run2():
 asyncio.run(run2())
 
 # from fastapi import FastAPI
-# from app.backend.routers import model_router
-# from app.backend.database import Base, engine
+# from graph_app.backend.routers import model_router
+# from graph_app.backend.database import Base, engine
 #
 # Base.metadata.create_all(bind=engine)
 #
-# app = FastAPI()
+# graph_app = FastAPI()
 #
-# app.include_router(model_router.router)
+# graph_app.include_router(model_router.router)

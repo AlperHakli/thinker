@@ -5,8 +5,16 @@ from langchain_core.chat_history import BaseChatMessageHistory
 
 
 def summary_buffer_memory_maker(
-                runnable: RunnableSerializable,
-        ):
+        runnable: RunnableSerializable,
+) \
+        -> RunnableWithMessageHistory:
+    """
+    :param runnable: RunnableSerializable chain you have created
+    :return: A RunnableWithMessageHistory object it simply add conversational summary buffer memory to your chain
+
+    see more look at this : https://python.langchain.com/api_reference/langchain/memory/langchain.memory.summary_buffer.ConversationSummaryBufferMemory.html
+
+    """
     return (
         RunnableWithMessageHistory(
             runnable=runnable,
@@ -31,9 +39,18 @@ def summary_buffer_memory_maker(
 
             ]))
 
+
 def buffer_window_memory_maker(
-        runnable : RunnableSerializable
-):
+        runnable: RunnableSerializable
+) \
+        -> RunnableWithMessageHistory:
+    """
+    :param runnable: RunnableSerializable chain you have created
+    :return: A RunnableWithMessageHistory object it simply add conversational buffer window memory to your chain
+
+    see more look at this : https://python.langchain.com/api_reference/langchain/memory/langchain.memory.buffer_window.ConversationBufferWindowMemory.html
+
+    """
     return (
         RunnableWithMessageHistory(
             runnable=runnable,
@@ -62,5 +79,6 @@ def buffer_window_memory_maker(
 math_agent_with_memory = summary_buffer_memory_maker(raw_chains.math_agent)
 chat_agent_with_memory = summary_buffer_memory_maker(raw_chains.chat_agent)
 utility_agent_with_memory = summary_buffer_memory_maker(raw_chains.utility_model)
-data_analysis_agent_with_memory = summary_buffer_memory_maker(raw_chains.data_analysis_agent)
-
+data_analysis_agent_with_memory = summary_buffer_memory_maker(raw_chains.database_analysis_agent)
+data_visualization_agent_with_memory = summary_buffer_memory_maker(raw_chains.database_visualization_agent)
+data_visualization_agent_dependent_with_memory = summary_buffer_memory_maker(raw_chains.database_visualization_agent_dependent)
