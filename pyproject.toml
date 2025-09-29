@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "thinker"
 version = "1.0.0"
-description = "Conversational AI project with multiple AI agents like pdf agents , word , docs and some agents for data analysis and visualization "
+description = "Database analysis and visualization agent"
 readme = "README.md"
 authors = []
 license = ""
