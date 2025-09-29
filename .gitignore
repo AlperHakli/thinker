@@ -49,3 +49,4 @@ dist/
 *.mypy_cache/
 *.pytest_cache/
 .pytest_cache/
+*.pyc
