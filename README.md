@@ -1,14 +1,24 @@
-<h1> --THİNKER-- </h1>
+# --THINKER--
 
-<h3> Description: </h3>
-Thinker is an desktop app that contains multiple agents for database analysis , database visualization , and an agent for building simple machine learning models for spesific datasets
+## Description
+Thinker is a web application that hosts multiple AI agents designed for:
 
-<h3> Usage: </h3>
-Pass for now
+- Database analysis  
+- Database visualization  
+- (Future) Building simple machine learning models for specific datasets  
 
-<h3> For Developers: </h3>
-To add a new agent you must follow these steps: </br>
-&nbsp;&nbsp;&nbsp;&nbsp;- Step 1 create a RunnableSerializable chain in the raw_chains.py</br>
-&nbsp;&nbsp;&nbsp;&nbsp;- Step 2 [OPTİONAL] 
+Thinker allows you to interact with your data effortlessly using AI-powered agents in a user-friendly interface.
+
+## Usage
+1. Provide your OpenAI API key within the app.  
+   - Learn more and get an API key: [OpenAI API](https://openai.com/en-EN/api/)  
+
+2. Access the Thinker app here:  
+   [https://thinker-dashboard.streamlit.app/](https://thinker-dashboard.streamlit.app/)  
+
+Start exploring your data and let Thinker assist you with analysis, visualization, and predictive insights!
+
+
+
 
 
