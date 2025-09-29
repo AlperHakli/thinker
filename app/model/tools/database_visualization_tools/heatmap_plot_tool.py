@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 from app.model.tools.database_visualization_tools.visualization_imports import *
-from app.model.tools.database_visualization_tools.helper_functions import multiple_variable_adjuster
+from app.model.tools.database_visualization_tools.helper_functions import _multiple_variable_adjuster
 import pandas as pd
 import streamlit as st
 from app.config import settings
@@ -67,7 +67,7 @@ async def heatmap_plot_tool(
             annot=annot
         )
 
-        ax = multiple_variable_adjuster(
+        ax = _multiple_variable_adjuster(
             ax=ax,
             outside_plot_color=background_color,
             x_label_color=x_label_color,

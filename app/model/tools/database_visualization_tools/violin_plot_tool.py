@@ -1,5 +1,5 @@
 from app.model.tools.database_visualization_tools.visualization_imports import *
-from app.model.tools.database_visualization_tools.helper_functions import multiple_variable_adjuster
+from app.model.tools.database_visualization_tools.helper_functions import _multiple_variable_adjuster
 import pandas as pd
 @tool
 async def violin_plot_tool(
@@ -84,7 +84,7 @@ async def violin_plot_tool(
         linewidth=violin_line_width,
         hue=db[hue_column_name] if hue_column_name is not None else None)
 
-    ax = multiple_variable_adjuster(
+    ax = _multiple_variable_adjuster(
         ax=ax,
         outside_plot_color=outside_plot_color,
         inside_plot_color=inside_plot_color,

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def multiple_variable_adjuster(
+def _multiple_variable_adjuster(
         ax: plt.Axes,
         window_title: str = None,
         plot_title: str = None,

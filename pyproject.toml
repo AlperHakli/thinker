@@ -18,7 +18,6 @@ dependencies = [
 
     #to create multiple agent workflows
     "langgraph",
-    "docarray>=0.40.0",
 
     #backend libraries
     "fastapi>=0.115.8",
