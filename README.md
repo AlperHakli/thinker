@@ -6,6 +6,8 @@ Thinker is a web application that hosts multiple AI agents designed for:
 - Database analysis  
 - Database visualization  
 - (Future) Building simple machine learning models for specific datasets  
+- (Future) Summarizing PDFs using RAG-based techniques  
+- (Future) Generating topic-specific PDFs  
 
 Thinker allows you to interact with your data effortlessly using AI-powered agents in a user-friendly interface.
 
@@ -17,8 +19,3 @@ Thinker allows you to interact with your data effortlessly using AI-powered agen
    [https://thinker-dashboard.streamlit.app/](https://thinker-dashboard.streamlit.app/)  
 
 Start exploring your data and let Thinker assist you with analysis, visualization, and predictive insights!
-
-
-
-
-
