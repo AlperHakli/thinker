@@ -66,9 +66,10 @@ def node_router(general_state: GeneralState)\
         return "exit"
     elif general_state["current_agent_name"] == "chat_agent":
         return "chat_agent"
-    elif general_state["current_agent_name"] == "math_agent":
-        return "math_agent"
-    # for now, I don't use utility_agent because model confuses utility_agent with database agents
+    # for now, I don't use utility_agent and math_agent because model confuses them with database agents
+    # elif general_state["current_agent_name"] == "math_agent":
+    #     return "math_agent"
+
     # elif general_state["current_agent_name"] == "utility_agent":
     #     return "utility_agent"
     elif general_state["current_agent_name"] == "db_analysis_agent":
@@ -85,10 +86,9 @@ graph = StateGraph(state_schema=GeneralState)
 #NODES:
 graph.add_node(node="setup_node", action=setup_node)
 graph.add_node(node="supervisor_agent", action=supervisor_node)
-# TODO solve agent streaming problem
 graph.add_node(node="chat_agent", action=all_agent_nodes.chat_agent_node)
-graph.add_node(node="math_agent", action=all_agent_nodes.math_agent_node)
-graph.add_node(node="utility_agent", action=all_agent_nodes.utility_agent_node)
+# graph.add_node(node="math_agent", action=all_agent_nodes.math_agent_node)
+# graph.add_node(node="utility_agent", action=all_agent_nodes.utility_agent_node)
 graph.add_node(node="data_analysis_agent", action=all_agent_nodes.data_analysis_node)
 graph.add_node(node="data_visuzalization_agent", action=all_agent_nodes.data_visualization_node)
 
@@ -101,7 +101,7 @@ graph.add_conditional_edges(
     path=node_router,
     path_map={
         "chat_agent": "chat_agent",
-        "utility_agent": "utility_agent",
+        # "utility_agent": "utility_agent",
         # "math_agent": "math_agent",
         "data_analysis_agent": "data_analysis_agent",
         "data_visuzalization_agent": "data_visuzalization_agent",
@@ -111,7 +111,7 @@ graph.add_conditional_edges(
 
 graph.add_edge(start_key="chat_agent", end_key="supervisor_agent")
 # graph.add_edge(start_key="math_agent", end_key="supervisor_agent")
-graph.add_edge(start_key="utility_agent", end_key="supervisor_agent")
+# graph.add_edge(start_key="utility_agent", end_key="supervisor_agent")
 graph.add_edge(start_key="data_analysis_agent", end_key="supervisor_agent")
 graph.add_edge(start_key="data_visuzalization_agent", end_key="supervisor_agent")
 

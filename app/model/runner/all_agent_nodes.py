@@ -76,7 +76,6 @@ async def data_visualization_node(general_state: GeneralState):
     streamer = QueueCallBackHandler(queue=queue)
     task = asyncio.create_task(
         executor.ainvoke(
-            # TODO solve this logical error
             agent_and_tools=agents_and_tools["data_visualization_agent"]
             if DB_CACHE[general_state["cache_key"]]["agent_counter"] ==1
             # that means this visualization agent will use previous agent's result
