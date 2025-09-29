@@ -19,28 +19,14 @@ dependencies = [
     #to create multiple agent workflows
     "langgraph",
 
-    #backend libraries
-    "fastapi>=0.115.8",
-    "uvicorn>=0.34.0",
-    "sqlalchemy",
-
-    #backend security libraries
-    "pyjwt",
-    "passlib",
-
-    #timezone library
-    "pytz",
-
     #data analysis libraries
     "pandas",
     "dask[complete]",
     "pyarrow",
 
     #visualization libraries
-    "graphviz",
     "matplotlib",
     "seaborn",
-    "plotly",
 
     #frontend
     "streamlit"
