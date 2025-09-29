@@ -1,15 +1,22 @@
 [tool.poetry]
 name = "thinker"
 version = "1.0.0"
-description = "Database analysis and Visualization agent "
+description = "Conversational AI project with multiple AI agents like pdf agents , word , docs and some agents for data analysis and visualization "
 readme = "README.md"
-requires-python = ">=3.12.7"
+authors = []
+license = ""
+
 
 packages = [
     { include = "app" }
 ]
 
+python = ">=3.12.7"
+
+
 [tool.poetry.dependencies]
+python = ">=3.12.7"
+
 ipykernel = ">=6.29.5"
 
 # langchain for creating agent and executing
@@ -26,7 +33,7 @@ langgraph = "*"
 
 # data analysis libraries
 pandas = "*"
-"dask[complete]" = "*"
+"dask[complete]" = { version = "*", extras = ["complete"] } # Dask'ın extra bağımlılık tanımı
 pyarrow = "*"
 
 # visualization libraries
@@ -41,5 +48,6 @@ streamlit = "*"
 ipdb = "*"
 grandalf = "*"
 
+# Streamlit ayarı, eğer kullanmaya devam etmek istiyorsanız.
 [tool.streamlit]
 package-mode = false
