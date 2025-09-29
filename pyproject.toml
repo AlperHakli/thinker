@@ -31,7 +31,7 @@ langgraph = "*"
 
 # data analysis libraries
 pandas = "*"
-"dask[complete]" = { version = "*", extras = ["complete"] } # Dask'ın extra bağımlılık tanımı
+dask = { version = "*", extras = ["complete"] }
 pyarrow = "*"
 
 # visualization libraries
